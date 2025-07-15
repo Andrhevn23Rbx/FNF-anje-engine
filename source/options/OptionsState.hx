@@ -57,13 +57,13 @@ class OptionsState extends MusicBeatState
 				openSubState(new options.VisualsUISubState());
 			case 'Gameplay':
 				openSubState(new options.GameplaySettingsSubState());
-			case 'Optimization':
+			case 'Optmise Settings':
 				openSubState(new options.OptimizationSubState());
-			case 'Game Rendering':
+			case 'Video Rendering':
 				openSubState(new options.GameRendererSettingsSubState());
 			case 'Adjust Delay and Combo':
 				LoadingState.loadAndSwitchState(() -> new options.NoteOffsetState());
-			case 'Misc':
+			case 'UnUsed':
 				openSubState(new options.MiscSettingsSubState());
 		}
 	}
