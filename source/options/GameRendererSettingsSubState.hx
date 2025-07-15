@@ -31,7 +31,7 @@ class GameRendererSettingsSubState extends BaseOptionsMenu
 	var fpsOption:Option;
 	public function new()
 	{
-		title = 'Video Rendering';
+		title = 'Game Renderer';
 		rpcTitle = 'Game Renderer Settings Menu'; //for Discord Rich Presence
 
 		var option:Option = new Option('Video Rendering Mode', //Name
