@@ -1060,7 +1060,7 @@ class ChartingState extends MusicBeatState
 		check_changeBPM.checked = (_song.notes[curSec] != null ? _song.notes[curSec].changeBPM : false);
 		check_changeBPM.name = 'check_changeBPM';
 
-		stepperSectionBPM = new FlxUINumericStepper(10, check_changeBPM.y + 20, 1, Conductor.bpm, 0, 999999, 1);
+		stepperSectionBPM = new FlxUINumericStepper(10, check_changeBPM.y + 20, 1, Conductor.bpm, 0, 999999999999999999, 1);
 		if(check_changeBPM.checked) {
 			stepperSectionBPM.value = _song.notes[curSec].bpm;
 		} else {
@@ -1321,7 +1321,7 @@ class ChartingState extends MusicBeatState
 		clearRightSectionButton.color = FlxColor.RED;
 		clearRightSectionButton.label.color = FlxColor.WHITE;
 
-		var stepperSectionJump:FlxUINumericStepper = new FlxUINumericStepper(clearSectionButton.x, clearSectionButton.y + 30, 1, 0, 0, 999999, 0);
+		var stepperSectionJump:FlxUINumericStepper = new FlxUINumericStepper(clearSectionButton.x, clearSectionButton.y + 30, 1, 0, 0, 999999999999999999, 0);
 		blockPressWhileTypingOnStepper.push(stepperSectionJump);
 
 		var jumpSection:FlxButton = new FlxButton(clearSectionButton.x, stepperSectionJump.y + 20, "Jump Section", function()
@@ -1634,7 +1634,7 @@ class ChartingState extends MusicBeatState
 		check_stackActive = new FlxUICheckBox(10, 10, null, null, "Enable EZ Spam Mode", 100);
 		check_stackActive.name = 'check_stackActive';
 
-		stepperStackNum = new FlxUINumericStepper(10, 30, 1, 1, 0, 999999, 4);
+		stepperStackNum = new FlxUINumericStepper(10, 30, 1, 1, 0, 999999999999999999, 4);
 		stepperStackNum.name = 'stack_count';
 		blockPressWhileTypingOnStepper.push(stepperStackNum);
 
@@ -1654,7 +1654,7 @@ class ChartingState extends MusicBeatState
 		halfSpamNum.color = FlxColor.RED;
 		halfSpamNum.label.color = FlxColor.WHITE;
 
-		stepperStackOffset = new FlxUINumericStepper(10, 80, 1, 1, 0, 999999, 4);
+		stepperStackOffset = new FlxUINumericStepper(10, 80, 1, 1, 0, 999999999999, 4);
 		stepperStackOffset.name = 'stack_offset';
 		blockPressWhileTypingOnStepper.push(stepperStackOffset);
 
