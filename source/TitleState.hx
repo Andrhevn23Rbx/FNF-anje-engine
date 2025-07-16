@@ -582,13 +582,13 @@ class TitleState extends MusicBeatState
 					FlxG.sound.music.fadeIn(4, 0, 0.7);
 				case 2:
 					#if PSYCH_WATERMARKS
-					createCoolText(['JS Engine by'], 15);
+					createCoolText(['ANJE By'], 15);
 					#else
 					createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
 					#end
 				case 4:
 					#if PSYCH_WATERMARKS
-					addMoreText('Jordan Santiago', 15);
+					addMoreText('Andre Nicholas Jr', 15);
 					addMoreText('Moxie', 15);
 					addMoreText('UltimateQuack', 15);
 					addMoreText('Shadow Mario', 15);
