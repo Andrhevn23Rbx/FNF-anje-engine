@@ -2463,7 +2463,13 @@ class PlayState extends MusicBeatState
 				tempScore = 'Score: ' + formattedScore + ' $divider Accuracy: $accuracy ['  + fcString + ']' + missString + (comboInfo ? ' $divider Combo: ' + formattedCombo : '') + npsString + ' $divider Rank: ' + ratingName;
 
 			case "Psych Engine", "JS Engine", "TGT V4":
-				tempScore = 'Score: ' + formattedScore + missString + (comboInfo ? ' $divider Combo: ' + formattedCombo : '') + npsString + ' $divider Rating: ' + ratingName + (ratingName != '?' ? ' (${accuracy}) - $fcString' : '');
+    var totalScore = opponentScore + songScore; // Both sides' scores combined
+    var totalCombo = opponentCombo + combo;     // Both sides' combos combined
+
+    tempScore = 'Score: $totalScore'
+        + ' | Combo: $opponentCombo + $combo = $totalCombo'
+        + ' | Bpm: ${Conductor.bpm}';
+
 
 			case "Leather Engine":
 				tempScore = '< Score: ' + formattedScore + missString + (comboInfo ? ' $divider Combo: ' + formattedCombo : '') + npsString + ' $divider Rating: ' + ratingName + (ratingName != '?' ? ' (${accuracy}) - $fcString' : '');
