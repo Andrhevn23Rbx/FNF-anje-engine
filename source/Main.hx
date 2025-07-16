@@ -6,6 +6,8 @@ import flixel.FlxGame;
 import lime.app.Application;
 import openfl.Lib;
 import openfl.display.Sprite;
+import flixel.FlxG;
+import flixel.util.FlxColor;
 
 using StringTools;
 #if (linux || mac)
@@ -16,13 +18,13 @@ import lime.graphics.Image;
 import backend.ALSoftConfig; // Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
 #end
 
-
 #if linux
 @:cppInclude('./external/gamemode_client.h')
 @:cppFileCode('
 	#define GAMEMODE_AUTO
 ')
 #end
+
 class Main extends Sprite {
 	final game = {
 		width: 1280,
@@ -101,15 +103,13 @@ class Main extends Sprite {
 		"ARK: Survival Evolved"
     ];
 
-	// You can pretty much ignore everything from here on - your code should go in your states.
-
 	public static function main():Void {
 		Lib.current.addChild(new Main());
 	}
 
 	public function new() {
 		super();
-		#if windows //DPI AWARENESS BABY
+		#if windows
 		@:functionCode('
 		#include <Windows.h>
 		SetProcessDPIAware()
@@ -133,13 +133,13 @@ class Main extends Sprite {
 			game.height = Math.ceil(stageHeight / game.zoom);
 		};
 
-		// #if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(psychlua.CallbackHandler.call)); #end
 		ClientPrefs.loadDefaultStuff();
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 
-		final funkinGame:FlxGame = new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen);
-		// Literally just from Vanilla FNF but I implemented it my own way. -Torch
-		// torch is my friend btw :3 -moxie
+		final funkinGame:FlxGame = new FlxGame(game.width, game.height, game.initialState, 
+		#if (flixel < "5.0.0") game.zoom, #end 
+		game.framerate, game.framerate, game.skipSplash, game.startFullscreen);
+
 		@:privateAccess {
 			final soundFrontEnd:flixel.system.frontEnds.SoundFrontEnd = new objects.CustomSoundTray.CustomSoundFrontEnd();
 			FlxG.sound = soundFrontEnd;
@@ -147,6 +147,11 @@ class Main extends Sprite {
 		}
 
 		addChild(funkinGame);
+
+		// 60 FPS Lock
+		FlxG.fixedTimestep = true;   // Locks game logic to 60 FPS
+		FlxG.updateFramerate = 60;   // Logic framerate
+		FlxG.drawFramerate = 60;     // Render framerate
 
 		fpsVar = new FPSCounter(3, 3, 0x00FFFFFF);
 		addChild(fpsVar);
@@ -176,7 +181,6 @@ class Main extends Sprite {
 
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
 
-		// shader coords fix
 		FlxG.signals.gameResized.add(function(w, h) {
 			if (FlxG.cameras != null) {
 			  	for (cam in FlxG.cameras.list) {
