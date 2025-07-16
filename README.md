@@ -46,7 +46,7 @@ This contains lots and lots of customizable and features built in to JS Engine, 
 - Custom Crash UI (Instead of Regular Psych Engine Crash)!
 - A nifty button in your Discord Profile!
 
-There is like lots and lots of stuff i've missed, but at least you would like those features built in **JS ENGINE**
+There is like lots and lots of stuff i've missed, but at least you would like those features built in **ANJ ENGINE**
 
 # Screenshots and Gameplays
 
@@ -83,11 +83,11 @@ A: Report [here.](https://github.com/JordanSantiagoYT/FNF-JS-Engine/issues) Also
 
 A: Send [here.](https://github.com/JordanSantiagoYT/FNF-JS-Engine/pulls)
 
-# Compiling JS Engine
+# Compiling ANJE
 
 Refer to [the Build Instructions](./BUILDING.md)
 
-If you get an error while Compiling, go [here](https://github.com/JordanSantiagoYT/FNF-JS-Engine/issues/359) to see if the issue is on there, if not, make an issue
+if you got the haxetools with visual studio 2019 or 2022 you can compile.. But what if i don't have haxetools or other stuff.. Use my Main.yml Workflow to compile! Have fun!
 
 ## Customization:
 
@@ -118,8 +118,7 @@ same goes for *Lua Scripts*, comment out or delete the line with `LUA_ALLOWED`, 
 @PatoFlamejanteTV
 - Small coding, also made a PDF guide for JS Engine.
 
-@HomuHomu833
-- Ported JS Engine to mobile
+
 
 ### The rest of the lovely contributors on GitHub! (Psych and JS Engine)
 <a href="https://github.com/JordanSantiagoYT/FNF-JS-Engine/graphs/contributors">
