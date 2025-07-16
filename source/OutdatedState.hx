@@ -17,7 +17,6 @@ import openfl.display.BlendMode;
 class OutdatedState extends MusicBeatState
 {
 	public static var leftState:Bool = false;
-
 	public static var currChanges:String = "dk";
 
 	var warnText:FlxText;
@@ -25,6 +24,7 @@ class OutdatedState extends MusicBeatState
 	var updateText:FlxText;
 	var checker:FlxBackdrop;
 	var bg:FlxSprite;
+
 	override function create()
 	{
 		Paths.clearStoredMemory();
@@ -34,6 +34,8 @@ class OutdatedState extends MusicBeatState
 
 		super.create();
 
+		// Comment out or remove all visual adds
+		/*
 		bg = new FlxSprite(0, 0).loadGraphic(Paths.image("aboutMenu", "preload"));
 		bg.color = 0xFFffd700;
 		bg.scale.set(1.1, 1.1);
@@ -50,7 +52,7 @@ class OutdatedState extends MusicBeatState
 		checker.updateHitbox();
 
 		warnText = new FlxText(0, 10, FlxG.width,
-			"HEY! Your JS Engine is outdated!\n"
+			"HEY! Your ANJ Engine is outdated!\n"
 			+ 'v' + MainMenuState.psychEngineJSVersion + ' < v' + TitleState.updateVersion + '\n'
 			,32);
 		warnText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -65,17 +67,24 @@ class OutdatedState extends MusicBeatState
 			"Press SPACE to view the full changelog, ENTER to update or ESCAPE to ignore this!"
 			,24);
 		updateText.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			updateText.y = 710 - updateText.height;
-			updateText.x = 10;
+		updateText.y = 710 - updateText.height;
+		updateText.x = 10;
 		add(updateText);
+		*/
 	}
 
 	override function update(elapsed:Float)
 	{
+		// Skip checker animation since it's invisible
+		/*
 		checker.x += 0.45 / (ClientPrefs.framerate / 60);
 		checker.y += (0.16 / (ClientPrefs.framerate / 60));
-		if(!leftState) {
-			if (FlxG.keys.justPressed.ENTER) {
+		*/
+
+		if (!leftState)
+		{
+			if (FlxG.keys.justPressed.ENTER)
+			{
 				leftState = true;
 				#if windows
 				FlxG.switchState(UpdateState.new);
@@ -83,22 +92,27 @@ class OutdatedState extends MusicBeatState
 				CoolUtil.browserLoad("https://github.com/JordanSantiagoYT/FNF-JS-Engine/releases/latest");
 				#end
 			}
-			if (FlxG.keys.justPressed.SPACE) {
+			if (FlxG.keys.justPressed.SPACE)
+			{
 				CoolUtil.browserLoad("https://github.com/JordanSantiagoYT/FNF-JS-Engine/releases/latest");
 			}
-			else if(controls.BACK) {
+			else if (controls.BACK)
+			{
 				leftState = true;
 			}
 
-			if(leftState)
+			if (leftState)
 			{
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				for (i in members)
+				{
 					FlxTween.tween(i, {alpha: 0}, 1, {
-						onComplete: function (twn:FlxTween) {
-							FlxG.switchState(MainMenuState.new);
+						onComplete: function (twn:FlxTween)
+						{
+							FlxG.switchState(new MainMenuState());
 						}
 					});
+				}
 			}
 		}
 		super.update(elapsed);
