@@ -589,10 +589,6 @@ class TitleState extends MusicBeatState
 				case 4:
 					#if PSYCH_WATERMARKS
 					addMoreText('Andre Nicholas Jr', 15);
-					addMoreText('Moxie', 15);
-					addMoreText('UltimateQuack', 15);
-					addMoreText('Shadow Mario', 15);
-					addMoreText('RiverOaken', 15);
 					#else
 					addMoreText('present');
 					#end
