@@ -28,7 +28,7 @@ class MiscSettingsSubState extends BaseOptionsMenu
 {
 	public function new()
 	{
-		title = 'UnUsed';
+		title = 'Misc';
 		rpcTitle = 'Miscellaneous Settings Menu'; //for Discord Rich Presence
 
 		var option:Option = new Option('Use JS Engine Recharts', //Name
