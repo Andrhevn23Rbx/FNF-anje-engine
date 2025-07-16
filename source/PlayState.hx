@@ -1315,13 +1315,13 @@ class PlayState extends MusicBeatState
 
 		switch(ClientPrefs.watermarkStyle)
 		{
-			case 'Vanilla': EngineWatermark.text = SONG.song + " " + CoolUtil.difficultyString() + " | JSE " + MainMenuState.psychEngineJSVersion;
+			case 'Vanilla': EngineWatermark.text = SONG.song + " " + CoolUtil.difficultyString() + " | ANJE " + MainMenuState.psychEngineJSVersion;
 			case 'Forever Engine':
 				EngineWatermark.text = "JS Engine v" + MainMenuState.psychEngineJSVersion;
 				EngineWatermark.x = FlxG.width - EngineWatermark.width - 5;
 			case 'JS Engine':
 				if (!ClientPrefs.downScroll) EngineWatermark.y = FlxG.height * 0.1 - 70;
-				EngineWatermark.text = "Playing " + SONG.song + " on " + CoolUtil.difficultyString() + " - JSE v" + MainMenuState.psychEngineJSVersion;
+				EngineWatermark.text = "Playing " + SONG.song + " on " + CoolUtil.difficultyString() + " - ANJE v" + MainMenuState.psychEngineJSVersion;
 			case 'Dave Engine':
 				EngineWatermark.setFormat(Paths.font("comic.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE,FlxColor.BLACK);
 				EngineWatermark.text = SONG.song;
@@ -2463,13 +2463,7 @@ class PlayState extends MusicBeatState
 				tempScore = 'Score: ' + formattedScore + ' $divider Accuracy: $accuracy ['  + fcString + ']' + missString + (comboInfo ? ' $divider Combo: ' + formattedCombo : '') + npsString + ' $divider Rank: ' + ratingName;
 
 			case "Psych Engine", "JS Engine", "TGT V4":
-    var totalScore = opponentScore + songScore; // Both sides' scores combined
-    var totalCombo = opponentCombo + combo;     // Both sides' combos combined
-
-    tempScore = 'Score: $totalScore'
-        + ' | Combo: $opponentCombo + $combo = $totalCombo'
-        + ' | Bpm: ${Conductor.bpm}';
-
+				tempScore = 'Score: ' + formattedScore + missString + (comboInfo ? ' $divider Combo: ' + formattedCombo : '') + npsString + ' $divider Rating: ' + ratingName + (ratingName != '?' ? ' (${accuracy}) - $fcString' : '');
 
 			case "Leather Engine":
 				tempScore = '< Score: ' + formattedScore + missString + (comboInfo ? ' $divider Combo: ' + formattedCombo : '') + npsString + ' $divider Rating: ' + ratingName + (ratingName != '?' ? ' (${accuracy}) - $fcString' : '');
@@ -6722,7 +6716,7 @@ class PlayState extends MusicBeatState
 		#if windows
 		if (!FileSystem.exists('ffmpeg.exe'))
 		{
-			trace("\"FFmpeg\" not found! (Is it in the same folder as JSEngine?)");
+			trace("\"FFmpeg\" not found! (Is it in the same folder as ANJEngine?)");
 			return;
 		}
 		#end
