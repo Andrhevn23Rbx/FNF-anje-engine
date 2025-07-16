@@ -3,13 +3,13 @@
   <br>
   <a href="https://github.com/JordanSantiagoYT/FNF-JS-Engine"><img src="/art/iconOG.png" alt="JSengine" width="150"></a>
   <br>
-  <b>JS Engine</b>
+  <b>ANJE</b>
   <br>
-  <i>(Jordan Santiago Engine)</i>
+  <i>(Andre Nicholas Jr Engine)</i>
   <br>
 </h1>
 <h3 align="center">
-  <b>JS Engine is a heavily modified Psych Engine fork, with lower-end devices and more customization in mind.</b>
+  <b>ANJE is a heavily modified Psych Engine fork, with lower-end devices and more customization in mind.</b>
 </h3>
 
 <p align="center">
@@ -24,11 +24,11 @@ _If you're looking for the Mobile port, [go here](https://github.com/JordanSanti
 
 ## Welcome
 
-Welcome to JS Engine's github repo, where you can download the engine and make spammy charts or have fun with the engine.
+Welcome to ANJ ENGINE github repo, where you can download the engine and make spammy charts or have fun with the engine.
 
 This contains lots and lots of customizable and features built in to JS Engine, if you wanna see most of them listed, you can see it below this text
 
-# Features/Performances in JS ENGINE
+# Features/Performances in ANJE
 
 **This fork has tons of features and performances features, most will be listed:**
 
@@ -100,6 +100,8 @@ to start you off, disabling Videos should be simple, simply Delete the line `"VI
 same goes for *Lua Scripts*, comment out or delete the line with `LUA_ALLOWED`, this and other customization options are all available within the `Project.xml` file.
 
 # Contributers
+@Andrhevn23rbx
+- Guy who made the fork ofc :)
 
 @JordanSantiagoYT (of course)
 - He's the owner... What do you think?
