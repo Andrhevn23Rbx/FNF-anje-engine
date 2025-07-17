@@ -101,6 +101,8 @@ class ClientPrefs { //default settings if it can't find a save file containing y
 	public static var dynamicSpawnTime:Bool = false;
 	public static var noteSpawnTime:Float = 1;
 	public static var resolution:String = '1280x720';
+
+	// *** FORCE 60 FPS lock here ***
 	public static var framerate:Int = 60;
 
 	//Optimization
@@ -170,8 +172,11 @@ class ClientPrefs { //default settings if it can't find a save file containing y
 	// Game Renderer
 	public static var ffmpegMode:Bool = false;
 	public static var ffmpegInfo:String = 'None';
+
+	// *** FORCE 60 FPS lock here ***
 	public static var targetFPS:Float = 60;
 	public static var unlockFPS:Bool = false;
+
 	public static var renderBitrate:Float = 5.0;
 	public static var vidEncoder:String = 'libx264';
 	public static var oldFFmpegMode:Bool = false;
@@ -191,16 +196,7 @@ class ClientPrefs { //default settings if it can't find a save file containing y
 	//Gameplay Modifiers
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
-		'scrolltype' => 'multiplicative', 
-		// anyone reading this, amod is multiplicative speed mod, cmod is constant speed mod, and xmod is bpm based speed mod.
-		// an amod example would be chartSpeed * multiplier
-		// cmod would just be constantSpeed = chartSpeed
-		// and xmod basically works by basing the speed on the bpm.
-		// iirc (beatsPerSecond * (conductorToNoteDifference / 1000)) * noteSize (110 or something like that depending on it, prolly just use note.height)
-		// bps is calculated by bpm / 60
-		// oh yeah and you'd have to actually convert the difference to seconds which I already do, because this is based on beats and stuff. but it should work
-		// just fine. but I wont implement it because I don't know how you handle sustains and other stuff like that.
-		// oh yeah when you calculate the bps divide it by the songSpeed or rate because it wont scroll correctly when speeds exist.
+		'scrolltype' => 'multiplicative',
 		'songspeed' => 1.0,
 		'healthgain' => 1.0,
 		'healthloss' => 1.0,
@@ -242,32 +238,32 @@ class ClientPrefs { //default settings if it can't find a save file containing y
 		'note_up'		=> [W, UP],
 		'note_right'	=> [D, RIGHT],
 		'bot_energy'	=> [CONTROL, NONE],
-		
+
 		'ui_left'		=> [A, LEFT],
 		'ui_down'		=> [S, DOWN],
 		'ui_up'			=> [W, UP],
 		'ui_right'		=> [D, RIGHT],
-		
+
 		'accept'		=> [SPACE, ENTER],
 		'back'			=> [BACKSPACE, ESCAPE],
 		'pause'			=> [ENTER, ESCAPE],
 		'reset'			=> [R, NONE],
-		
+
 		'volume_mute'	=> [ZERO, NONE],
 		'volume_up'		=> [NUMPADPLUS, PLUS],
 		'volume_down'	=> [NUMPADMINUS, MINUS],
-		
+
 		'debug_1'		=> [SEVEN, NONE],
 		'debug_2'		=> [EIGHT, NONE],
 		'qt_taunt'		=> [SPACE, NONE]
 	];
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
-	
+
 	// i suck at naming things sorry
 	private static var importantMap:Map<String, Array<String>> = [
-		"saveBlackList" => ["keyBinds", "defaultKeys", "defaultArrowRGB", "defaultPixelRGB", "defaultQuantRGB"],
+		"saveBlackList" => ["keyBinds", "defaultKeys", "defaultArrowRGB", "defaultPixelRGB", "defaultQuantRGB", "framerate", "targetFPS", "unlockFPS"],
 		"flixelSound" => ["volume", "sound"],
-		"loadBlackList" => ["keyBinds", "defaultKeys", "defaultArrowRGB", "defaultPixelRGB", "defaultQuantRGB"],
+		"loadBlackList" => ["keyBinds", "defaultKeys", "defaultArrowRGB", "defaultPixelRGB", "defaultQuantRGB", "framerate", "targetFPS", "unlockFPS"],
 	];
 
 	public static var defaultArrowRGB:Array<Array<FlxColor>>;
@@ -282,8 +278,11 @@ class ClientPrefs { //default settings if it can't find a save file containing y
 	}
 
 	public static function saveSettings() { //changes settings when you exit so that it doesn't reset every time you close the game
-		// null code real, from my own mod
-		// credits to my friend sanco
+		// *** Force 60 FPS on save ***
+		framerate = 60;
+		targetFPS = 60;
+		unlockFPS = false;
+
 		for (field in Type.getClassFields(ClientPrefs))
 		{
 			if (Type.typeof(Reflect.field(ClientPrefs, field)) != TFunction)
@@ -308,7 +307,7 @@ class ClientPrefs { //default settings if it can't find a save file containing y
 
 	public static function loadPrefs() { //loads settings if it finds a save file containing the settings
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
-		
+
 		for (field in Type.getClassFields(ClientPrefs))
 		{
 			if (Type.typeof(Reflect.field(ClientPrefs, field)) != TFunction)
@@ -322,18 +321,15 @@ class ClientPrefs { //default settings if it can't find a save file containing y
 					if (field == "showFPS" && Main.fpsVar != null)
 						Main.fpsVar.visible = showFPS;
 
+					// *** Force FPS values to 60 ***
 					if (field == "framerate")
 					{
-						if (framerate > FlxG.drawFramerate)
-						{
-							FlxG.updateFramerate = framerate;
-							FlxG.drawFramerate = framerate;
-						}
-						else
-						{
-							FlxG.drawFramerate = framerate;
-							FlxG.updateFramerate = framerate;
-						}
+						framerate = 60;
+						targetFPS = 60;
+						unlockFPS = false;
+
+						FlxG.drawFramerate = 60;
+						FlxG.updateFramerate = 60;
 					}
 				}
 			}
