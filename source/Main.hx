@@ -16,7 +16,7 @@ import lime.graphics.Image;
 #end
 
 #if desktop
-import backend.ALSoftConfig; // Keep this for DCE protection
+import backend.ALSoftConfig;
 #end
 
 #if linux
@@ -38,6 +38,26 @@ class Main extends Sprite {
 	};
 
 	public static var fpsVar:FPSCounter;
+
+	// === RESTORED VARIABLES ===
+	public static var askedToUpdate:Bool = false;
+	public static var superDangerMode:Bool = Sys.args().contains("-troll");
+
+	public static final __superCoolErrorMessagesArray:Array<String> = [
+		"A fatal error has occ- wait what?",
+		"missigno.",
+		"oopsie daisies!! you did a fucky wucky!!",
+		"null balls reference",
+		"get friday night funkd'",
+		"engine skipped a heartbeat",
+		"stack trace more like dunno i dont have any jokes",
+		"oh the misery. everybody wants to be my enemy",
+		"Error: Sorry i already have a girlfriend",
+		"Game used Crash. It's super effective!",
+		"The engine got constipated. Sad.",
+		"uhhhhhhhhhhhhhhhh... i dont think this is normal...",
+		"ARK: Survival Evolved"
+	];
 
 	public static function main():Void {
 		Lib.current.addChild(new Main());
@@ -86,10 +106,9 @@ class Main extends Sprite {
 		addChild(fpsVar);
 
 		// === 60 FPS LOCK ===
-		FlxG.fixedTimestep = true;            // Lock logic updates to 60 FPS
-		FlxG.updateFramerate = game.framerate; // 60 logic FPS
-		FlxG.drawFramerate = game.framerate;   // 60 render FPS
-		FlxG.vsync = false;                   // Disable vsync to prevent double frame locks
+		FlxG.fixedTimestep = true;
+		FlxG.updateFramerate = game.framerate;
+		FlxG.drawFramerate = game.framerate;
 
 		// === PLUGINS ===
 		#if (!web && flixel < "5.5.0")
@@ -98,10 +117,8 @@ class Main extends Sprite {
 		FlxG.plugins.addIfUniqueType(new ScreenShotPlugin());
 		#end
 
-		// Prevent auto-pause when focus is lost
 		FlxG.autoPause = false;
 
-		// === PLATFORM-SPECIFIC ===
 		#if (linux || mac)
 		var icon = Image.fromFile("icon.png");
 		Lib.current.stage.window.setIcon(icon);
@@ -117,7 +134,7 @@ class Main extends Sprite {
 		DiscordClient.prepare();
 		#end
 
-		// === Handle Resize ===
+		// Handle Resize
 		FlxG.signals.gameResized.add(function(w, h) {
 			if (FlxG.cameras != null) {
 				for (cam in FlxG.cameras.list) {
