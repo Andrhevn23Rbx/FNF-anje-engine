@@ -13,11 +13,16 @@ _This engine wasn’t originally made just for Dave and Bambi, but you can use i
 
 ### What I Allow
 
+---
+
 - Fork the engine freely, Jordan allows forks like this!
 - Edit the source code however you like—just don’t complain to me if you break it during compile.
 - Use it for fun projects, mods, and shader experiments.
 
 ### What I Don’t Allow
+
+---
+
 - Don’t break the engine on purpose.
 - If you fork it, take care of it like it’s your own project.
 
@@ -27,11 +32,9 @@ We’re working on performance, but be reasonable.
 
 ## Compilation Info
 ### How to Compile
-I use Main.yml GitHub Workflow to compile.
+I use the "Main.yml" GitHub Workflow to compile.
 Heads up:
-
 It may take 2–3 hours to build everything. Depends on your system.
-
 _Windows builds are recommended!_
 
 ## System Requirements
