@@ -4,7 +4,6 @@ import flixel.FlxG;
 import flixel.util.FlxStringUtil;
 import flixel.input.keyboard.FlxKey;
 import lime.system.System as LimeSystem;
-import lime.ui.Window;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.events.KeyboardEvent;
@@ -48,7 +47,6 @@ class FPSCounter extends TextField
         multiline = true;
 
         times = [];
-
         currentFPS = 0;
 
         // OS Info
@@ -64,12 +62,12 @@ class FPSCounter extends TextField
 
     override function __enterFrame(deltaTime:Float):Void
     {
-        if (!ClientPrefs.data.showFPS) return;
+        if (!ClientPrefs.showFPS) return;
 
         var now = Timer.stamp() * 1000;
         times.push(now);
 
-        // Remove old times for 1 second window
+        // Keep 1-second window of timestamps
         while (times.length > 0 && times[0] < now - 1000)
             times.shift();
 
@@ -77,44 +75,43 @@ class FPSCounter extends TextField
         if (deltaTimeout < timeoutDelay) return;
 
         currentFPS = times.length;
-
         updateText();
+
         deltaTimeout = 0.0;
     }
 
     public dynamic function updateText():Void
     {
-        var displayFPS = ClientPrefs.data.ffmpegMode ? ClientPrefs.data.targetFPS : Math.round(currentFPS);
+        var displayFPS = ClientPrefs.ffmpegMode ? ClientPrefs.targetFPS : Math.round(currentFPS);
         text = 'FPS: $displayFPS';
 
-        if (ClientPrefs.data.ffmpegMode)
+        if (ClientPrefs.ffmpegMode)
             text += ' (Rendering Mode)';
         else
-            text += ' - ${ClientPrefs.data.vsync ? "VSync" : "No VSync"}';
+            text += ' - ${ClientPrefs.vsync ? "VSync" : "No VSync"}';
 
-        // Memory info
-        if (ClientPrefs.data.showMemory)
+        // Memory usage
+        if (ClientPrefs.showRamUsage)
         {
             var usedMem = FlxStringUtil.formatBytes(Gc.memInfo64(Gc.MEM_INFO_USAGE));
             text += '\nMemory: $usedMem';
         }
 
         // OS Info
-        if (ClientPrefs.data.showOS)
+        if (ClientPrefs.debugInfo)
             text += '\n' + os;
 
-        // Rainbow FPS color
-        if (ClientPrefs.data.rainbowFPS)
+        // Rainbow FPS or Warning Colors
+        if (ClientPrefs.rainbowFPS)
         {
-            colorTimer = (colorTimer % 360.0) + (1.0 / (ClientPrefs.data.framerate / 120));
+            colorTimer = (colorTimer % 360.0) + (1.0 / (ClientPrefs.framerate / 120));
             textColor = FlxColor.fromHSB(colorTimer, 1, 1);
         }
         else
         {
-            // Warning colors based on FPS
-            var half = ClientPrefs.data.framerate / 2;
-            var third = ClientPrefs.data.framerate / 3;
-            var quarter = ClientPrefs.data.framerate / 4;
+            var half = ClientPrefs.framerate / 2;
+            var third = ClientPrefs.framerate / 3;
+            var quarter = ClientPrefs.framerate / 4;
 
             if (currentFPS <= half && currentFPS >= third)
                 textColor = 0xFFFFFF00; // Yellow
@@ -129,7 +126,7 @@ class FPSCounter extends TextField
 
     private function onKeyPress(event:KeyboardEvent):Void
     {
-        if (event.keyCode == FlxKey.F11 && ClientPrefs.data.f11Shortcut)
+        if (event.keyCode == FlxKey.F11 && ClientPrefs.f11Shortcut)
             FlxG.fullscreen = !FlxG.fullscreen;
     }
 
