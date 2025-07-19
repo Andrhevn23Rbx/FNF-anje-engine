@@ -67,7 +67,6 @@ class FPSCounter extends TextField
         var now = Timer.stamp() * 1000;
         times.push(now);
 
-        // Keep 1-second window of timestamps
         while (times.length > 0 && times[0] < now - 1000)
             times.shift();
 
@@ -88,20 +87,17 @@ class FPSCounter extends TextField
         if (ClientPrefs.ffmpegMode)
             text += ' (Rendering Mode)';
         else
-            text += ' - ${ClientPrefs.vsync ? "VSync" : "No VSync"}';
+            text += ' - ${FlxG.vsync ? "VSync" : "No VSync"}';
 
-        // Memory usage
         if (ClientPrefs.showRamUsage)
         {
             var usedMem = FlxStringUtil.formatBytes(Gc.memInfo64(Gc.MEM_INFO_USAGE));
             text += '\nMemory: $usedMem';
         }
 
-        // OS Info
         if (ClientPrefs.debugInfo)
             text += '\n' + os;
 
-        // Rainbow FPS or Warning Colors
         if (ClientPrefs.rainbowFPS)
         {
             colorTimer = (colorTimer % 360.0) + (1.0 / (ClientPrefs.framerate / 120));
@@ -126,7 +122,7 @@ class FPSCounter extends TextField
 
     private function onKeyPress(event:KeyboardEvent):Void
     {
-        if (event.keyCode == FlxKey.F11 && ClientPrefs.f11Shortcut)
+        if (event.keyCode == FlxKey.F11)
             FlxG.fullscreen = !FlxG.fullscreen;
     }
 
