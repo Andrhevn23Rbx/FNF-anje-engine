@@ -2,119 +2,168 @@ package debug;
 
 import flixel.FlxG;
 import flixel.util.FlxStringUtil;
+import flixel.input.keyboard.FlxKey;
+import lime.system.System as LimeSystem;
+import lime.ui.Window;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
+import openfl.events.KeyboardEvent;
 import haxe.Timer;
 import cpp.vm.Gc;
 
+#if cpp
+#if windows
+@:cppFileCode('#include <windows.h>')
+#elseif (ios || mac)
+@:cppFileCode('#include <mach-o/arch.h>')
+#else
+@:headerInclude('sys/utsname.h')
+#end
+#end
+
 class FPSCounter extends TextField
 {
+    public static var instance:FPSCounter;
     public var currentFPS(default, null):Float;
 
-    // Only current memory usage is available
-    public var memory(get, never):Float;
-
-    inline function get_memory():Float
-        return Gc.memInfo64(Gc.MEM_INFO_USAGE);
-
-    @:noCompletion private var times:Array<Float>;
-
-    private var fpsMultiplier:Float = 1.0;
+    private var times:Array<Float>;
     private var deltaTimeout:Float = 0.0;
-    public var timeoutDelay:Float = 50;
-    private var timeColor:Float = 0.0;
+    private var timeoutDelay:Float = 50;
+    private var colorTimer:Float = 0.0;
 
-    public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
+    public var os:String = '';
+
+    public function new(x:Float = 10, y:Float = 10, color:Int = 0xFFFFFF)
     {
         super();
+        instance = this;
+
         this.x = x;
         this.y = y;
 
-        currentFPS = 0;
         selectable = false;
         mouseEnabled = false;
         defaultTextFormat = new TextFormat("_sans", 14, color);
         autoSize = LEFT;
         multiline = true;
-        text = "FPS: ";
 
         times = [];
+
+        currentFPS = 0;
+
+        // OS Info
+        if (LimeSystem.platformName == LimeSystem.platformVersion || LimeSystem.platformVersion == null)
+            os = 'OS: ${LimeSystem.platformName}' #if cpp + ' ${getArch() != "Unknown" ? getArch() : ""}' #end;
+        else
+            os = 'OS: ${LimeSystem.platformName}' #if cpp + ' ${getArch() != "Unknown" ? getArch() : ""}' #end + ' - ${LimeSystem.platformVersion}';
+
+        FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
+
+        text = "FPS: ";
     }
 
     override function __enterFrame(deltaTime:Float):Void
     {
-        if (!ClientPrefs.showFPS) return;
+        if (!ClientPrefs.data.showFPS) return;
 
         var now = Timer.stamp() * 1000;
         times.push(now);
 
-        while (times.length > 0 && times[0] < now - 1000 / fpsMultiplier)
+        // Remove old times for 1 second window
+        while (times.length > 0 && times[0] < now - 1000)
             times.shift();
 
-        if (deltaTimeout < timeoutDelay)
-        {
-            deltaTimeout += deltaTime;
-            return;
-        }
+        deltaTimeout += deltaTime;
+        if (deltaTimeout < timeoutDelay) return;
 
-        if (Std.isOfType(FlxG.state, PlayState) && !PlayState.instance.trollingMode)
-        {
-            try { fpsMultiplier = PlayState.instance.playbackRate; }
-            catch (e:Dynamic) { fpsMultiplier = 1.0; }
-        }
-        else fpsMultiplier = 1.0;
-
-        currentFPS = Math.min(FlxG.drawFramerate, times.length) / fpsMultiplier;
+        currentFPS = times.length;
 
         updateText();
-
         deltaTimeout = 0.0;
     }
 
     public dynamic function updateText():Void
     {
-        text = "FPS: " + (ClientPrefs.ffmpegMode ? ClientPrefs.targetFPS : Math.round(currentFPS));
+        var displayFPS = ClientPrefs.data.ffmpegMode ? ClientPrefs.data.targetFPS : Math.round(currentFPS);
+        text = 'FPS: $displayFPS';
 
-        if (ClientPrefs.ffmpegMode)
-            text += " (Rendering Mode)";
+        if (ClientPrefs.data.ffmpegMode)
+            text += ' (Rendering Mode)';
+        else
+            text += ' - ${ClientPrefs.data.vsync ? "VSync" : "No VSync"}';
 
-        if (ClientPrefs.showRamUsage)
+        // Memory info
+        if (ClientPrefs.data.showMemory)
         {
-            text += "\nMemory: " + FlxStringUtil.formatBytes(memory);
-            // no peak memory info available
+            var usedMem = FlxStringUtil.formatBytes(Gc.memInfo64(Gc.MEM_INFO_USAGE));
+            text += '\nMemory: $usedMem';
         }
 
-        if (ClientPrefs.debugInfo)
-        {
-            text += '\nCurrent state: ${Type.getClassName(Type.getClass(FlxG.state))}';
-            if (FlxG.state.subState != null)
-                text += '\nCurrent substate: ${Type.getClassName(Type.getClass(FlxG.state.subState))}';
+        // OS Info
+        if (ClientPrefs.data.showOS)
+            text += '\n' + os;
 
-            // Remove or comment out OS info because OpenFL System lacks those fields
-            // #if !linux
-            // text += "\nOS: " + 'Unknown OS';
-            // #end
+        // Rainbow FPS color
+        if (ClientPrefs.data.rainbowFPS)
+        {
+            colorTimer = (colorTimer % 360.0) + (1.0 / (ClientPrefs.data.framerate / 120));
+            textColor = FlxColor.fromHSB(colorTimer, 1, 1);
         }
-
-        if (ClientPrefs.rainbowFPS)
+        else
         {
-            timeColor = (timeColor % 360.0) + (1.0 / (ClientPrefs.framerate / 120));
-            textColor = FlxColor.fromHSB(timeColor, 1, 1);
-        }
-        else if (!ClientPrefs.ffmpegMode)
-        {
-            textColor = 0xFFFFFFFF;
+            // Warning colors based on FPS
+            var half = ClientPrefs.data.framerate / 2;
+            var third = ClientPrefs.data.framerate / 3;
+            var quarter = ClientPrefs.data.framerate / 4;
 
-            var halfFPS = ClientPrefs.framerate / 2;
-            var thirdFPS = ClientPrefs.framerate / 3;
-            var quarterFPS = ClientPrefs.framerate / 4;
-
-            if (currentFPS <= halfFPS && currentFPS >= thirdFPS)
+            if (currentFPS <= half && currentFPS >= third)
                 textColor = 0xFFFFFF00; // Yellow
-            else if (currentFPS <= thirdFPS && currentFPS >= quarterFPS)
+            else if (currentFPS <= third && currentFPS >= quarter)
                 textColor = 0xFFFF8000; // Orange
-            else if (currentFPS <= quarterFPS)
+            else if (currentFPS <= quarter)
                 textColor = 0xFFFF0000; // Red
+            else
+                textColor = 0xFFFFFFFF; // White
         }
     }
+
+    private function onKeyPress(event:KeyboardEvent):Void
+    {
+        if (event.keyCode == FlxKey.F11 && ClientPrefs.data.f11Shortcut)
+            FlxG.fullscreen = !FlxG.fullscreen;
+    }
+
+    #if cpp
+    #if windows
+    @:functionCode('
+        SYSTEM_INFO osInfo;
+        GetSystemInfo(&osInfo);
+        switch(osInfo.wProcessorArchitecture)
+        {
+            case 9: return ::String("x86_64");
+            case 5: return ::String("ARM");
+            case 12: return ::String("ARM64");
+            case 6: return ::String("IA-64");
+            case 0: return ::String("x86");
+            default: return ::String("Unknown");
+        }
+    ')
+    #elseif (ios || mac)
+    @:functionCode('
+        const NXArchInfo *archInfo = NXGetLocalArchInfo();
+        return ::String(archInfo == NULL ? "Unknown" : archInfo->name);
+    ')
+    #else
+    @:functionCode('
+        struct utsname osInfo{};
+        uname(&osInfo);
+        return ::String(osInfo.machine);
+    ')
+    #end
+    @:noCompletion
+    private function getArch():String
+    {
+        return "Unknown";
+    }
+    #end
 }
